@@ -160,7 +160,7 @@ return function(plugin: Plugin, ui: UiLibrary.Ui, filterOptions: AssetIdFilter.F
     
     local success, statusCode = connection:Send("/reupload", HttpService:JSONEncode(request))
     if not success then
-        local message: string = (StatusCodes :: any)[statusCode] or "Unable to send data to localhost."
+        local message: string = (StatusCodes :: any)[statusCode] or ("Unable to send data to localhost.\n" .. statusCode)
         ui:Notify("Notification", message)
 
         busy = false
