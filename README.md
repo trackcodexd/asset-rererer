@@ -1,5 +1,5 @@
 <div align="center">
-        <img src="[![AssetReuploaderText]()](https://github.com/user-attachments/assets/4e753b87-3069-4a8f-824b-69fc910584c5)" alt="Icon" />
+        <img src="https://github.com/user-attachments/assets/4e753b87-3069-4a8f-824b-69fc910584c5" alt="Icon" />
     <br><br>
     <a href="https://github.com/kartFr/Asset-Reuploader/releases/latest"><img src="https://img.shields.io/github/downloads/kartfr/Asset-Reuploader/total?color=yellow" alt="Latest download" /></a>
     <a href="https://github.com/kartFr/Asset-Reuploader/releases/latest"><img src="https://img.shields.io/github/v/release/kartfr/Asset-Reuploader?color=yellow" alt="Latest release" /></a>
