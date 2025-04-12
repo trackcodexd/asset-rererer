@@ -187,7 +187,7 @@ func Reupload(ctx *context.Context, r *request.Request) {
 			}
 		}
 
-		batchProcess(&wg, <-task, batchSize)
+		go batchProcess(&wg, <-task, batchSize)
 	}
 	wg.Wait()
 }
