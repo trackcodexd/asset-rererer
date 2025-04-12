@@ -92,7 +92,7 @@ jobs:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
             run: |
               if [ "${{ matrix.os }}" = "windows-latest" ]; then
-                7z a -sdel AssetReuploader-${{ github.event.inputs.version }}-${{ matrix.name }}.zip ./LICENSE ./AssetReuploader*
+                7z a -sdel AssetReuploader-${{ github.event.inputs.version }}-${{ matrix.name }}.zip LICENSE ./AssetReuploader*
               else
                 zip -jr AssetReuploader-${{ github.event.inputs.version }}-${{ matrix.name }}.zip LICENSE ./AssetReuploader*
               fi
