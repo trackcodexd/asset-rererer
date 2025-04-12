@@ -1,0 +1,61 @@
+package clientutils
+
+import (
+	"errors"
+	"fmt"
+
+	"github.com/kartFr/Asset-Reuploader/internal/app/assets/shared/permissions"
+	"github.com/kartFr/Asset-Reuploader/internal/app/context"
+	"github.com/kartFr/Asset-Reuploader/internal/app/request"
+	"github.com/kartFr/Asset-Reuploader/internal/app/settings"
+	"github.com/kartFr/Asset-Reuploader/internal/color"
+	"github.com/kartFr/Asset-Reuploader/internal/console"
+	"github.com/kartFr/Asset-Reuploader/internal/files"
+)
+
+const cookieFileName = settings.CookieFileName
+
+func GetNewCookie(ctx *context.Context, r *request.Request, m string) {
+	pauseController := ctx.PauseController
+
+	if !pauseController.Pause() {
+		pauseController.WaitIfPaused()
+		return
+	}
+
+	console.ClearScreen()
+
+	client := ctx.Client
+	inputErr := errors.New(m)
+	for {
+		fmt.Print(ctx.Logger.History.String())
+		color.Error.Println(inputErr)
+
+		i, err := console.LongInput("ROBLOSECURITY: ")
+		console.ClearScreen()
+		if err != nil {
+			inputErr = err
+			continue
+		}
+
+		if err := client.SetCookie(i); err != nil {
+			inputErr = err
+			continue
+		}
+
+		if err := permissions.CanEditUniverse(ctx, r); err != nil {
+			inputErr = err
+			continue
+		}
+
+		break
+	}
+
+	fmt.Print(ctx.Logger.History.String())
+
+	if err := files.Write(cookieFileName, client.Cookie); err != nil {
+		ctx.Logger.Error("Failed to save cookie: ", err)
+	}
+
+	pauseController.Unpause()
+}
