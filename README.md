@@ -9,7 +9,7 @@
 
 #
 
-Roblox asset reuploader using a roblox plugin and go.
+Roblox asset reuploader using a [roblox plugin](https://create.roblox.com/store/asset/89096096219225/Asset-Reuploader) and go.
 
 Intended to reupload assets since you are unable to use assets if another account owns them.
 
