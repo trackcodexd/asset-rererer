@@ -12,9 +12,9 @@ import (
 
 var (
 	ErrNotMember              = errors.New("account is not in group")
-	ErrNoCreateItemPermission = errors.New("account does not have permissions to create items")
-	ErrNoManageGroupGames     = errors.New("account does not have permissions to manage group games")
-	ErrNoEditPermission       = errors.New("account does not have permission to edit place")
+	ErrNoCreateItemPermission = errors.New("account does not have permissios to create items for group")
+	ErrNoManageGroupGames     = errors.New("account does not have permission to manage group games")
+	ErrNoEditPermission       = errors.New("account does not have permission to edit group places")
 )
 
 func canEditGroup(c *roblox.Client, groupID int64) error {
