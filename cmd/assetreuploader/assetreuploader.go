@@ -24,10 +24,9 @@ func main() {
 	cookie = strings.TrimSpace(cookie)
 
 	c, clientErr := roblox.NewClient(cookie)
+	console.ClearScreen()
 
 	if readErr != nil || clientErr != nil {
-		console.ClearScreen()
-
 		if readErr != nil && !os.IsNotExist(readErr) {
 			color.Error.Println(readErr)
 		}
@@ -38,8 +37,6 @@ func main() {
 
 		getCookie(c)
 	}
-
-	console.ClearScreen()
 
 	if err := files.Write(cookieFile, c.Cookie); err != nil {
 		color.Error.Println("Failed to save cookie: ", err)
@@ -60,7 +57,10 @@ func getCookie(c *roblox.Client) {
 			continue
 		}
 
-		if err := c.SetCookie(i); err != nil {
+		fmt.Println("Authenticating cookie...")
+		err = c.SetCookie(i)
+		console.ClearScreen()
+		if err != nil {
 			color.Error.Println(err)
 			continue
 		}

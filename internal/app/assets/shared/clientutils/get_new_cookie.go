@@ -38,12 +38,18 @@ func GetNewCookie(ctx *context.Context, r *request.Request, m string) {
 			continue
 		}
 
-		if err := client.SetCookie(i); err != nil {
-			inputErr = err
+		fmt.Println("Authenticating cookie...")
+		err = client.SetCookie(i)
+		console.ClearScreen()
+		if err != nil {
+			color.Error.Println(err)
 			continue
 		}
 
-		if err := permissions.CanEditUniverse(ctx, r); err != nil {
+		fmt.Println("Checking if account can edit universe...")
+		err = permissions.CanEditUniverse(ctx, r)
+		console.ClearScreen()
+		if err != nil {
 			inputErr = err
 			continue
 		}
