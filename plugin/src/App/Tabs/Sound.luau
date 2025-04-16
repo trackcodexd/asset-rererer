@@ -1,5 +1,4 @@
 --!strict
-local AssetIdfilter = require("../AssetIdFilter")
 local getFilterOptions = require("../GetFilterOptions")
 local reuploadIds = require("../ReuploadIds")
 local UiLibrary = require("../../UiLibrary")
@@ -11,12 +10,6 @@ return function(ui: UiLibrary.Ui, plugin: Plugin)
     local tab = ui:CreateTab("Sound")
     local placeList
 
-    local function getFilter(instances: { Instance }): AssetIdfilter.FilterOptions
-        local filterOptions = getFilterOptions(plugin, instances)
-        table.insert(filterOptions.WhitelistedInstances, "Sound")
-        return filterOptions
-    end
-
     local function getPlaceList(): { number }
         local placesListValues = placeList:Get()
         local list = table.create(#placesListValues)
@@ -27,11 +20,23 @@ return function(ui: UiLibrary.Ui, plugin: Plugin)
     end
 
     tab:CreateButton("Reupload", function()
-		reuploadIds(plugin, ui, getFilter(game:GetDescendants()), "Sound", getPlaceList())
+        local filter = getFilterOptions(plugin, game:GetDescendants())
+        table.insert(filter.WhitelistedInstances, "Sound")
+
+		reuploadIds(plugin, ui, filter, "Sound", getPlaceList())
 	end)
 	
 	tab:CreateButton("Reupload Selected", function()
-        reuploadIds(plugin, ui, getFilter(Selection:Get()), "Sound", getPlaceList())
+        local filter = {
+            WhitelistedInstances = {
+                "Sound",
+                "StringValue", "NumberValue", "IntValue",
+                "Script", "LocalScript", "ModuleScript"
+            },
+            Instances = Selection:Get()
+        }
+
+        reuploadIds(plugin, ui, filter, "Sound", getPlaceList())
 	end)
 
     placeList = tab:CreateList()
@@ -51,13 +56,13 @@ return function(ui: UiLibrary.Ui, plugin: Plugin)
             return 
         end
 
-        placeId = tostring(placeId)
-        if placeList.elements[placeId] then
+        local stringPlaceId = tostring(placeId)
+		if placeList.elements[stringPlaceId] then
             ui:Notify("Notification", "Place id is in list.") 
             return 
         end
 
-        local element = placeList:CreateElement(placeId)
+		local element = placeList:CreateElement(stringPlaceId)
             :AddDestroyButton()
         
         element.instance.TextLabel.Text = `({placeId}) {(productInfo :: any).Name}`

@@ -1,5 +1,4 @@
 --!strict
-local AssetIdfilter = require("../AssetIdFilter")
 local getFilterOptions = require("../GetFilterOptions")
 local reuploadIds = require("../ReuploadIds")
 local UiLibrary = require("../../UiLibrary")
@@ -39,20 +38,26 @@ return function(ui: UiLibrary.Ui, plugin: Plugin)
         plugin:SetSetting("CharacterMeshes", state)
     end, plugin:GetSetting("CharacterMeshes"))
 
-    local function getFilter(instances: { Instance }): AssetIdfilter.FilterOptions
-        local filterOptions = getFilterOptions(plugin, instances)
+	tab:CreateButton("Reupload", function()
+        local filter = getFilterOptions(plugin, game:GetDescendants())
         for settingName, className in meshSettings do
             if not plugin:GetSetting(settingName) then continue end
-            table.insert(filterOptions.WhitelistedInstances, className)
+            table.insert(filter.WhitelistedInstances, className)
         end
-        return filterOptions
-    end
-	
-	tab:CreateButton("Reupload", function()
-		reuploadIds(plugin, ui, getFilter(game:GetDescendants()), "Mesh")
+
+		reuploadIds(plugin, ui, filter, "Mesh")
 	end)
 	
 	tab:CreateButton("Reupload Selected", function()
-		reuploadIds(plugin, ui, getFilter(Selection:Get()), "Mesh")
+        local filter = {
+            WhitelistedInstances = {
+                "MeshPart", "SpecialMesh", "CharacterMesh", 
+                "StringValue", "NumberValue", "IntValue",
+                "Script", "LocalScript", "ModuleScript"
+            },
+            Instances = Selection:Get()
+        }
+
+        reuploadIds(plugin, ui, filter, "Mesh")
 	end)
 end

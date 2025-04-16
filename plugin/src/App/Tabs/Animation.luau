@@ -1,5 +1,4 @@
 --!strict
-local AssetIdfilter = require("../AssetIdFilter")
 local getFilterOptions = require("../GetFilterOptions")
 local reuploadIds = require("../ReuploadIds")
 local UiLibrary = require("../../UiLibrary")
@@ -8,18 +7,23 @@ local Selection = game:GetService("Selection")
 
 return function(ui: UiLibrary.Ui, plugin: Plugin)
 	local tab = ui:CreateTab("Animation")
-
-	local function getFilter(instances: { Instance }): AssetIdfilter.FilterOptions
-		local filterOptions = getFilterOptions(plugin, instances)
-		table.insert(filterOptions.WhitelistedInstances, "Animation")
-		return filterOptions
-	end
 	
 	tab:CreateButton("Reupload", function()
-		reuploadIds(plugin, ui, getFilter(game:GetDescendants()), "Animation")
+		local filter = getFilterOptions(plugin, game:GetDescendants())
+		table.insert(filter.WhitelistedInstances, "Animation")
+		reuploadIds(plugin, ui, filter, "Animation")
 	end)
 	
 	tab:CreateButton("Reupload Selected", function()
-		reuploadIds(plugin, ui, getFilter(Selection:Get()), "Animation")
+		local filter =  {
+			WhitelistedInstances = {
+				"Animation",
+				"StringValue", "NumberValue", "IntValue",
+				"Script", "LocalScript", "ModuleScript"
+			},
+			Instances = Selection:Get()
+		}
+
+		reuploadIds(plugin, ui, filter, "Animation")
 	end)
 end
