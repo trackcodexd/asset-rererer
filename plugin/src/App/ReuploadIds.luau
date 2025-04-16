@@ -134,9 +134,7 @@ return function(plugin: Plugin, ui: UiLibrary.Ui, filterOptions: AssetIdFilter.F
         end
 
         if #(result :: any) == 0 then return end
-        local notifyThread = task.delay(10, print, `Taking a while to replace {#(result :: any)} ids...`)
         AssetIdFilter.replaceIds(filteredIds, result :: any)
-        task.cancel(notifyThread)
         warn(`Replaced {#(result :: any)} ids`)
     end
 

@@ -1,6 +1,7 @@
 --!strict
 local ApiDump = require("../ApiDump")
 local retry = require("../Retry")
+local WaitGroup = require("../WaitGroup")
 
 local ScriptEditorService = game:GetService("ScriptEditorService")
 local AssetService = game:GetService("AssetService")
@@ -122,10 +123,6 @@ local instanceIdSetters = {
     Animation = setAnimationId,
     Sound = setSoundId,
 
-    Script = setScriptIds,
-    LocalScript = setScriptIds,
-    ModuleScript = setScriptIds,
-
     NumberValue = setNumberValueId,
     IntValue = setNumberValueId,
     StringValue = setStringValueIds,
@@ -136,6 +133,7 @@ local instanceIdSetters = {
 }
 
 return function(filteredIds: { [number]: { Instance } }, idsToChange: { IdPair })
+    local waitGroup = WaitGroup.new()
     local scriptIdChanges = {}
 
     for _, idPair in idsToChange do
@@ -155,11 +153,20 @@ return function(filteredIds: { [number]: { Instance } }, idsToChange: { IdPair }
             local className = instance.ClassName
             local setInstanceId = instanceIdSetters[className]
             if not setInstanceId then error(`{className} is not supported`) end
-            setInstanceId(instance, oldId, newId)
+
+            waitGroup:Add(function()
+                local success, result = pcall(setInstanceId :: any, instance, oldId, newId)
+                if not success then warn("Failed to change", instance, `{oldId} to {newId}:`, result) end
+            end)
         end
     end
 
     for instance, idPairs in scriptIdChanges do
-        setScriptIds(instance, idPairs)
+        waitGroup:Add(function()
+            local success, result = pcall(setScriptIds, instance, idPairs)
+            if not success then warn("Failed to bulk change", instance, result) end
+        end)  
     end
+
+    waitGroup:Wait()
 end
