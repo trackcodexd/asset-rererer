@@ -1,10 +1,10 @@
 --!strict
 local Input = {}
 
-local Theme = require("../../Theme")
-local Tip = require("../../Tip")
+local Theme = require("../Theme")
+local Tip = require("../Tip")
 
-local asset = script.Parent.Parent.Parent.Assets.TextInput
+local asset = script.Parent.Parent.Assets.Input
 
 local function AddTip(self: Input, tip: Tip.Tip)
     local textBox = self.instance.TextBox

@@ -1,7 +1,7 @@
 --!strict
 local List = {}
 
-local Input = require("./List/Input")
+local Input = require("./Input")
 local Theme = require(".././Theme")
 local ListElement = require("./List/ListElement")
 
