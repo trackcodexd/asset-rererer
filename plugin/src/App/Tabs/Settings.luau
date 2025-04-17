@@ -23,6 +23,20 @@ return function(ui: UiLibrary.Ui, plugin: Plugin)
         plugin:SetSetting("ExportJSON", state)
     end, plugin:GetSetting("ExportJSON"))
 
+    local split3 = tab:CreateSplit()
+    local portInput; portInput = split3:CreateInput("Port: " .. plugin:GetSetting("Port"), function(input)
+        local newPort = tonumber(input)
+        if not newPort then return end
+
+        if newPort <= 2048 or newPort > 65535 then
+            ui:Notify("Notification", "Port has to be between 2049-65535.")
+            return
+        end
+
+        plugin:SetSetting("Port", newPort)
+        portInput.instance.TextBox.PlaceholderText = "Port: " .. newPort
+    end)
+
     local themeList
 
     local function setThemeButton(oldTheme: string, newTheme: string)
@@ -64,7 +78,7 @@ return function(ui: UiLibrary.Ui, plugin: Plugin)
         element.instance.TextLabel.Text = themeName
     end
 
-    tab:CreateButton("Import theme", function()
+    split3:CreateButton("Import theme", function()
         local file: File = StudioService:PromptImportFile({"json"} :: any) :: File
         if not file then return end
 

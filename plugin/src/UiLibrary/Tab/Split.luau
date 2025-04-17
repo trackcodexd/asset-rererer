@@ -1,6 +1,7 @@
 --!strict
 local Split = {}
 
+local Input = require("./Input")
 local Toggle = require("./Toggle")
 local Button = require("./Button")
 
@@ -22,10 +23,16 @@ local function CreateButton(self: Split, text: string, callback: () -> ()): Butt
     local button = Button.new(self.instance, text, callback)
     sizeElement(self, button.instance)
     table.insert(self._elements, button)
-    
-    button:UpdateTheme()
-
     return button
+end
+
+local function CreateInput(self: Split, placeholderText: string, callback: (input: string) -> ()): Input.Input
+    assert(#self._elements <= 2, "split can only have 2 elements")
+
+    local input = Input.new(self.instance, placeholderText, callback)
+    sizeElement(self, input.instance)
+    table.insert(self._elements, input)
+    return input
 end
 
 local function CreateToggle(self: Split, text: string, callback: (state: boolean) -> (), defaultState: boolean?): Toggle.Toggle
@@ -34,9 +41,6 @@ local function CreateToggle(self: Split, text: string, callback: (state: boolean
     local toggle = Toggle.new(self.instance, text, callback, defaultState)
     sizeElement(self, toggle.instance)
     table.insert(self._elements, toggle)
-
-    toggle:UpdateTheme()
-
     return toggle
 end
 
@@ -63,6 +67,7 @@ export type Split = {
     instance: Frame,
 
     CreateButton: typeof(CreateButton),
+    CreateInput: typeof(CreateInput),
     CreateToggle: typeof(CreateToggle),
     UpdateTheme: typeof(UpdateTheme),
     Destroy: typeof(Destroy),
@@ -80,6 +85,7 @@ function Split.new(parent: GuiObject): Split
         instance = instance,
 
         CreateButton = CreateButton,
+        CreateInput = CreateInput,
         CreateToggle = CreateToggle,
         UpdateTheme = UpdateTheme,
         Destroy = Destroy,

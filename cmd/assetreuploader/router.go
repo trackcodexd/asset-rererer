@@ -8,22 +8,22 @@ import (
 	"time"
 
 	"github.com/kartFr/Asset-Reuploader/internal/app/assets"
+	"github.com/kartFr/Asset-Reuploader/internal/app/config"
 	"github.com/kartFr/Asset-Reuploader/internal/app/request"
 	"github.com/kartFr/Asset-Reuploader/internal/app/response"
-	"github.com/kartFr/Asset-Reuploader/internal/app/settings"
 	"github.com/kartFr/Asset-Reuploader/internal/color"
 	"github.com/kartFr/Asset-Reuploader/internal/files"
 	"github.com/kartFr/Asset-Reuploader/internal/roblox"
 )
 
-const (
-	port                    = settings.Port
-	compatiblePluginVersion = settings.CompatiblePluginVersion
-)
+var CompatiblePluginVersion = "1.0.0"
 
-var (
-	getOutputFileName = settings.GetOutputFileName
-)
+var port = config.Get("port")
+
+func getOutputFileName(reuploadType string) string {
+	t := time.Now()
+	return fmt.Sprintf("Output_%s_%s.json", reuploadType, t.Format("2006-01-02_15-04-05"))
+}
 
 func serve(c *roblox.Client) error {
 	var exportedJSONName string
@@ -85,7 +85,7 @@ func serve(c *roblox.Client) error {
 			return
 		}
 
-		if req.PluginVersion != compatiblePluginVersion {
+		if req.PluginVersion != CompatiblePluginVersion {
 			w.WriteHeader(http.StatusConflict)
 			return
 		}
@@ -128,5 +128,5 @@ func serve(c *roblox.Client) error {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	return http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
+	return http.ListenAndServe(":"+port, nil)
 }

@@ -22,6 +22,10 @@ toggleButton.Click:Connect(function() widget.Enabled = not widget.Enabled end)
 widget:GetPropertyChangedSignal("Enabled"):Connect(function() toggleButton:SetActive(widget.Enabled) end)
 widget.Title = `Asset Reuploader {currentVersion}`
 
+if plugin:GetSetting("Port") == nil then
+	plugin:SetSetting("Port", 51048)
+end
+
 local ui = UiLibrary.new(widget, plugin)
 App.init(ui, plugin)
 

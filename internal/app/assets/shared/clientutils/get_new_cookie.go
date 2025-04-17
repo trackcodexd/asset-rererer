@@ -5,15 +5,15 @@ import (
 	"fmt"
 
 	"github.com/kartFr/Asset-Reuploader/internal/app/assets/shared/permissions"
+	"github.com/kartFr/Asset-Reuploader/internal/app/config"
 	"github.com/kartFr/Asset-Reuploader/internal/app/context"
 	"github.com/kartFr/Asset-Reuploader/internal/app/request"
-	"github.com/kartFr/Asset-Reuploader/internal/app/settings"
 	"github.com/kartFr/Asset-Reuploader/internal/color"
 	"github.com/kartFr/Asset-Reuploader/internal/console"
 	"github.com/kartFr/Asset-Reuploader/internal/files"
 )
 
-const cookieFileName = settings.CookieFileName
+var cookieFile = config.Get("cookie_file")
 
 func GetNewCookie(ctx *context.Context, r *request.Request, m string) {
 	pauseController := ctx.PauseController
@@ -42,7 +42,7 @@ func GetNewCookie(ctx *context.Context, r *request.Request, m string) {
 		err = client.SetCookie(i)
 		console.ClearScreen()
 		if err != nil {
-			color.Error.Println(err)
+			inputErr = err
 			continue
 		}
 
@@ -59,7 +59,7 @@ func GetNewCookie(ctx *context.Context, r *request.Request, m string) {
 
 	fmt.Print(ctx.Logger.History.String())
 
-	if err := files.Write(cookieFileName, client.Cookie); err != nil {
+	if err := files.Write(cookieFile, client.Cookie); err != nil {
 		ctx.Logger.Error("Failed to save cookie: ", err)
 	}
 

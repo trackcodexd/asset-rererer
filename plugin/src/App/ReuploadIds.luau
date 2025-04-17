@@ -1,6 +1,4 @@
 --!strict
-local PORT = 51048
-
 local AssetIdFilter = require("./AssetIdFilter")
 local Connection = require("./Connection")
 local retry = require("./Retry")
@@ -115,7 +113,7 @@ return function(plugin: Plugin, ui: UiLibrary.Ui, filterOptions: AssetIdFilter.F
         return
     end
 
-    local connection, response = Connection.new(PORT)
+    local connection, response = Connection.new(plugin:GetSetting("Port"))
     if not connection then
         ui:Notify("Notification", "Unable to connect to localhost. Did you start the executable?" )
         busy = false
