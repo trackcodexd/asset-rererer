@@ -82,11 +82,15 @@ jobs:
             with:
               go-version: '1.24'
 
-          - name: Get plugin version
-            run: echo "pluginVersion=$(cat plugin/Version.txt)" >> $GITHUB_ENV
-
           - name: Build
-            run: env GOARCH=${{ matrix.arch }} go build -ldflags="-s -w -X 'main.CompatiblePluginVersion=${{ env.pluginVersion }}'" -o AssetReuploader${{ matrix.os == 'windows-latest' && '.exe' || '' }} ./cmd/...
+            shell: bash
+            run: |
+              VERSION=$(cat plugin/Version.txt | tr -d '\r\n')
+
+              env GOARCH=${{ matrix.arch }} go build \
+              -ldflags="-s -w -X main.CompatiblePluginVersion=${VERSION}" \
+              -o AssetReuploader${{ matrix.os == 'windows-latest' && '.exe' || '' }} \
+              ./cmd/...
           
           - name: Upload to release
             shell: bash
