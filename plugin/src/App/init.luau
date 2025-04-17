@@ -1,7 +1,7 @@
 --!strict
 local App = {}
 
-local PLUGIN_ID = "rbxassetid://127531206955283"
+local PLUGIN_ID = "rbxassetid://89096096219225"
 
 local UiLibrary = require("./UiLibrary")
 
