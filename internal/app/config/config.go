@@ -25,6 +25,10 @@ func init() {
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
 		split := strings.Split(line, "=")
+		if len(split) != 2 {
+			continue
+		}
+
 		config[split[0]] = split[1]
 	}
 
