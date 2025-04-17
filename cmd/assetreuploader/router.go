@@ -16,7 +16,7 @@ import (
 	"github.com/kartFr/Asset-Reuploader/internal/roblox"
 )
 
-var CompatiblePluginVersion = "1.0.0"
+var CompatiblePluginVersion = ""
 
 var port = config.Get("port")
 
@@ -85,7 +85,7 @@ func serve(c *roblox.Client) error {
 			return
 		}
 
-		if req.PluginVersion != CompatiblePluginVersion {
+		if CompatiblePluginVersion != "" && req.PluginVersion != CompatiblePluginVersion {
 			w.WriteHeader(http.StatusConflict)
 			return
 		}
