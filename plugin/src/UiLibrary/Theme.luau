@@ -32,6 +32,7 @@ local DEFAULT_THEME_PARAMETERS: RawTheme = {
     NotificationBackgroundImage = "",
 }
 
+local ContentProvider = game:GetService("ContentProvider")
 local HttpService = game:GetService("HttpService")
 
 local currentTheme: Theme
@@ -156,6 +157,14 @@ local function normalizeRawTheme(rawTheme: RawTheme, themeId: string): Theme
 	return theme
 end
 
+local function preloadThemeAssets(theme: Theme)
+	local assets = {
+		theme.BackgroundImage, theme.ToggleImage, theme.TipImage,
+		theme.XImage, theme.NotificationImage, theme.NotificationBackgroundImage
+	}
+	task.spawn(ContentProvider.PreloadAsync, ContentProvider, assets)
+end
+
 local function save()
 	assert(plugin, "theme needs to be initialized, call Theme.init() first")
 	
@@ -200,6 +209,7 @@ function Theme.set(themeId: string)
 
 	currentTheme = normalizeRawTheme(theme, themeId)
 	plugin:SetSetting("CurrentTheme", themeId)
+	preloadThemeAssets(currentTheme)
 end
 
 function Theme.add(rawTheme: RawTheme): string
