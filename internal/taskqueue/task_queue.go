@@ -1,7 +1,7 @@
 package taskqueue
 
 import (
-	"slices"
+	"container/list"
 	"sync"
 	"time"
 )
@@ -17,14 +17,15 @@ type task[R any] struct {
 }
 
 type Queue[R any] struct {
-	tasks    []task[R]
-	interval time.Duration
-	mutex    sync.Mutex
+	isSchedulerRunning bool
+	tasks              *list.List
+	interval           time.Duration
+	mutex              sync.Mutex
 }
 
 func New[R any](interval time.Duration) *Queue[R] {
 	return &Queue[R]{
-		tasks:    make([]task[R], 0),
+		tasks:    list.New(),
 		interval: interval,
 	}
 }
@@ -33,28 +34,37 @@ func (q *Queue[R]) QueueTask(f func() (R, error)) chan TaskResult[R] {
 	taskChan := make(chan TaskResult[R])
 
 	q.mutex.Lock()
+	defer q.mutex.Unlock()
 
-	q.tasks = append(q.tasks, task[R]{
+	q.tasks.PushBack(task[R]{
 		Func: f,
 		Chan: taskChan,
 	})
 
-	if len(q.tasks) == 1 {
+	if !q.isSchedulerRunning {
 		go q.startScheduler()
 	}
-
-	q.mutex.Unlock()
 
 	return taskChan
 }
 
 func (q *Queue[R]) startScheduler() {
+	q.isSchedulerRunning = true
+
 	for {
-		if len(q.tasks) == 0 {
+		q.mutex.Lock()
+		if q.tasks.Len() == 0 {
+			q.isSchedulerRunning = false
+			q.mutex.Unlock()
 			return
 		}
 
-		task := q.tasks[0]
+		element := q.tasks.Front()
+		task := element.Value.(task[R])
+
+		q.tasks.Remove(element)
+		q.mutex.Unlock()
+
 		go func() {
 			res, err := task.Func()
 			task.Chan <- TaskResult[R]{
@@ -62,10 +72,6 @@ func (q *Queue[R]) startScheduler() {
 				Error:  err,
 			}
 		}()
-
-		q.mutex.Lock()
-		q.tasks = slices.Delete(q.tasks, 0, 1)
-		q.mutex.Unlock()
 
 		time.Sleep(q.interval)
 	}

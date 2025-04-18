@@ -23,7 +23,7 @@ var UploadAnimationErrors = struct {
 }
 
 func newAnimationURL(groupID int64, name, description string) string {
-	url := fmt.Sprintf("https://www.roblox.com/ide/publish/UploadNewAnimation?assetTypeName=Animation&name=%s&description=%s&isGamesAsset=False", // isGamesAsset bypasses ratelimit
+	url := fmt.Sprintf("https://www.roblox.com/ide/publish/UploadNewAnimation?assetTypeName=Animation&name=%s&description=%s",
 		url.QueryEscape(name),
 		url.QueryEscape(description),
 	)
