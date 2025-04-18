@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/kartFr/Asset-Reuploader/internal/app/assets/shared/assetutils"
 	"github.com/kartFr/Asset-Reuploader/internal/app/assets/shared/clientutils"
@@ -16,7 +17,10 @@ import (
 	"github.com/kartFr/Asset-Reuploader/internal/roblox/assetdelivery"
 	"github.com/kartFr/Asset-Reuploader/internal/roblox/develop"
 	"github.com/kartFr/Asset-Reuploader/internal/roblox/ide"
+	"github.com/kartFr/Asset-Reuploader/internal/taskqueue"
 )
+
+const uploadRateLimit time.Duration = time.Minute / 3000
 
 const assetTypeID int32 = 24
 
@@ -37,6 +41,7 @@ func Reupload(ctx *context.Context, r *request.Request) {
 	}
 
 	filter := assetutils.NewFilter(ctx, r, assetTypeID)
+	uploadQueue := taskqueue.New[int64](uploadRateLimit)
 
 	logger.Println("Reuploading animations...")
 
@@ -68,31 +73,35 @@ func Reupload(ctx *context.Context, r *request.Request) {
 			return
 		}
 
-		newID, err := retry.Do(
-			retry.NewOptions(retry.Tries(3)),
-			func() (int64, error) {
-				pauseController.WaitIfPaused()
+		res := <-uploadQueue.QueueTask(func() (int64, error) {
+			return retry.Do(
+				retry.NewOptions(retry.Tries(3)),
+				func() (int64, error) {
+					pauseController.WaitIfPaused()
 
-				id, err := uploadHandler()
-				if err == nil {
-					return id, nil
-				}
+					id, err := uploadHandler()
+					if err == nil {
+						return id, nil
+					}
 
-				if err == ide.UploadAnimationErrors.ErrNotLoggedIn {
-					clientutils.GetNewCookie(ctx, r, "cookie expired")
-				} else if err == ide.UploadAnimationErrors.ErrInappropriateName {
-					assetInfo.Name = fmt.Sprintf("(%s) [Censored]", assetInfo.Name)
-				}
+					if err == ide.UploadAnimationErrors.ErrNotLoggedIn {
+						clientutils.GetNewCookie(ctx, r, "cookie expired")
+					} else if err == ide.UploadAnimationErrors.ErrInappropriateName {
+						assetInfo.Name = fmt.Sprintf("(%s) [Censored]", assetInfo.Name)
+					}
 
-				return 0, &retry.ContinueRetry{Err: err}
-			},
-		)
-		if err != nil {
+					return 0, &retry.ContinueRetry{Err: err}
+				},
+			)
+		})
+
+		if err := res.Error; err != nil {
 			assetInfo.Name = oldName
 			newUploadError("Failed to upload", assetInfo, err)
 			return
 		}
 
+		newID := res.Result
 		newValue := idsProcessed.Add(1)
 		logger.Success(uploaderror.New(int(newValue), idsToUpload, "", assetInfo, newID))
 		resp.AddItem(response.ResponseItem{

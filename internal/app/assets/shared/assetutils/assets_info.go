@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	assetsInfoThrottle  time.Duration = 60 * time.Second / 95
+	assetsInfoRateLimit time.Duration = time.Minute / 95
 	AssetsInfoChunkSize int           = 50
 )
 
@@ -47,7 +47,7 @@ func GetAssetsInfoInChunks(ctx *context.Context, r *request.Request) []chan Asse
 	}
 
 	ids := r.IDs
-	queue := taskqueue.New[develop.GetAssetsInfoResponse](assetsInfoThrottle)
+	queue := taskqueue.New[develop.GetAssetsInfoResponse](assetsInfoRateLimit)
 
 	chunkAmount := (len(ids) + AssetsInfoChunkSize - 1) / AssetsInfoChunkSize
 	tasks := make([]chan AssetsInfoResult, 0, chunkAmount)
