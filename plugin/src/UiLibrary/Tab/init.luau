@@ -9,7 +9,7 @@ local Toggle = require("./Tab/Toggle")
 
 local assets = script.Parent.Assets
 local asset = assets.Tab
-local mainUiFrame = assets.MainFrame.Frame
+local mainUiFrame = assets.MainFrame
 
 local function CreateButton(self: Tab, text: string, callback: () -> ()): Button.Button
 	local button = Button.new(self.instance, text, callback)

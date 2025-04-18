@@ -4,7 +4,7 @@ local Tip = {}
 local Theme = require("./Theme")
 
 local assets = script.Parent.Assets
-local tipBarAsset = assets.MainFrame.Frame.Tip
+local tipBarAsset = assets.MainFrame.Tip
 
 type TipBarAsset = typeof(tipBarAsset)
 

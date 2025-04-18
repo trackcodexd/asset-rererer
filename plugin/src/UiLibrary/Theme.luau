@@ -6,13 +6,17 @@ local DEFAULT_THEME_PARAMETERS: RawTheme = {
 
     Font = "SourceSansPro",
     TextColor = { Enum.StudioStyleGuideColor.MainText.Name },
+	TextSize = 15,
     DimmedTextColor = { Enum.StudioStyleGuideColor.DimmedText.Name },
 	StrokeColor = Color3.new(),
     StrokeTransparency = 0.75,  -- varies based on theme: 1 for light, 0.75 for dark if not set
 
-    MainBackgroundColor = { Enum.StudioStyleGuideColor.MainBackground.Name },
+	BorderColor = { Enum.StudioStyleGuideColor.Border.Name },
+
+    ForegroundColor = { Enum.StudioStyleGuideColor.MainBackground.Name },
+	ForegroundImage = "",
+
     BackgroundColor = { Enum.StudioStyleGuideColor.Light.Name },
-    BorderColor = { Enum.StudioStyleGuideColor.Border.Name },
 	BackgroundImage = "",
 
     UnselectedColor = { Enum.StudioStyleGuideColor.Button.Name },
@@ -47,13 +51,17 @@ export type Theme = {
 
 	Font: Font,
 	TextColor: Color3,
+	TextSize: number,
 	DimmedTextColor: Color3,
 	StrokeColor: Color3,
 	StrokeTransparency: number,
 
-	MainBackgroundColor: Color3,
-	BackgroundColor: Color3,
 	BorderColor: Color3,
+
+	ForegroundColor: Color3,
+	ForegroundImage: string,
+
+	BackgroundColor: Color3,
 	BackgroundImage: string,
 
 	UnselectedColor: Color3,
@@ -159,7 +167,7 @@ end
 
 local function preloadThemeAssets(theme: Theme)
 	local assets = {
-		theme.BackgroundImage, theme.ToggleImage, theme.TipImage,
+		theme.ForegroundImage, theme.BackgroundImage, theme.ToggleImage, theme.TipImage,
 		theme.XImage, theme.NotificationImage, theme.NotificationBackgroundImage
 	}
 	task.spawn(ContentProvider.PreloadAsync, ContentProvider, assets)
@@ -229,19 +237,17 @@ function Theme.add(rawTheme: RawTheme): string
 end
 
 function Theme.updateFrame(frame: GuiObject)
-	frame.BackgroundColor3 = currentTheme.MainBackgroundColor
+	frame.BackgroundColor3 = currentTheme.ForegroundColor
 	frame.BorderColor3 = currentTheme.BorderColor
 end
 
 function Theme.updateText(text: TextBox | TextLabel | TextButton, updateBackground: boolean?)
 	text.FontFace = currentTheme.Font
+	text.TextSize = currentTheme.TextSize
 	text.TextColor3 = currentTheme.TextColor
 	text.TextStrokeColor3 = currentTheme.StrokeColor
 	text.TextStrokeTransparency = currentTheme.StrokeTransparency
-
-	if text:IsA("TextBox") then
-		text.PlaceholderColor3 = currentTheme.DimmedTextColor
-	end
+	if text:IsA("TextBox") then text.PlaceholderColor3 = currentTheme.DimmedTextColor end
 
 	if updateBackground then 
 		Theme.updateFrame(text) 

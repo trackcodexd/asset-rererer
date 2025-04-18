@@ -25,13 +25,13 @@ end
 
 local function CreateTab(self: Ui, name: string): Tab.Tab
 	local tabIndex = #self._tabs + 1
-	local tab = Tab.new(self.instance.Frame :: any, function()
+	local tab = Tab.new(self.instance :: any, function()
 		if self._currentTabIndex == tabIndex then return end
 		selectTab(self, tabIndex)
 	end, name)
 	table.insert(self._tabs, tab)
 
-	local topbar = self.instance.Frame.Topbar
+	local topbar = self.instance.Topbar
 	local padding = topbar.Frame.UIPadding
 	local gridLayout = topbar.Frame.UIGridLayout
 	local tabCount = #topbar.Frame:GetChildren() - 2
@@ -47,13 +47,13 @@ local function CreateTab(self: Ui, name: string): Tab.Tab
 end
 
 local function CreateTip(self: Ui, text: string): Tip.Tip
-	return Tip.new(self.instance.Frame.Tip :: any, text)
+	return Tip.new(self.instance.Tip :: any, text)
 end
 
 local function Notify(self: Ui, title: string, description: string)
-	local notification = self.instance.Frame.Notification
+	local notification = self.instance.Notification
 
-	local mainFrame = notification.Main.Frame
+	local mainFrame = notification.Main.Frame.Frame
 	mainFrame.Description.Text = description
 	mainFrame.Title.Text = title
 
@@ -63,35 +63,37 @@ end
 local function UpdateTheme(self: Ui)
 	local theme = Theme.get()
 	
-	local uiFrame = self.instance.Frame
-	uiFrame.Back.BackgroundColor3 = theme.BackgroundColor
+	local uiFrame = self.instance
+	uiFrame.BackgroundColor3 = theme.BackgroundColor
+	uiFrame.Image = theme.BackgroundImage
 
 	local main = uiFrame.Main
 	main.BackgroundColor3 = theme.BorderColor
-	main.Frame.Image = theme.BackgroundImage
-	main.Frame.BackgroundColor3 = theme.MainBackgroundColor
+	main.Frame.Image = theme.ForegroundImage
+	main.Frame.BackgroundColor3 = theme.ForegroundColor
 
 	local topBar = uiFrame.Topbar
 	topBar.BackgroundColor3 = theme.BorderColor
-	topBar.Frame.BackgroundColor3 = theme.MainBackgroundColor
+	topBar.Frame.BackgroundColor3 = theme.ForegroundColor
 
 	local notification = uiFrame.Notification
 	notification.Image = theme.NotificationBackgroundImage
 	notification.Main.Transparency = theme.NotificationTransparency
 	notification.Main.BackgroundColor3 = theme.BorderColor
 
-	local notificationMainFrame = notification.Main.Frame
+	local notificationBorder = notification.Main.Frame
+	notificationBorder.BackgroundColor3 = theme.BorderColor
+
+	local notificationMainFrame = notificationBorder.Frame
 	Theme.updateText(notificationMainFrame.Close, true)
 	Theme.updateText(notificationMainFrame.Description, true)
 	Theme.updateText(notificationMainFrame.Title, true)
 	notificationMainFrame.Image = theme.NotificationImage
-	notificationMainFrame.BackgroundColor3 = theme.MainBackgroundColor
+	notificationMainFrame.BackgroundColor3 = theme.ForegroundColor
 	notificationMainFrame.Transparency = theme.NotificationTransparency
 
 	local tipbar = uiFrame.Tip
-	tipbar.BackgroundColor3 = theme.BorderColor
-	tipbar.Frame.BackgroundColor3 = theme.MainBackgroundColor
-
+	Theme.updateFrame(tipbar)
 	Theme.updateText(tipbar.Frame.TipText)
 
 	for _, tab in self._tabs do
@@ -134,13 +136,13 @@ export type Ui = {
 
 function UiLibrary.new(parent: Instance, plugin: Plugin): Ui
 	local instance = asset:Clone()
-	local notificationFrame = instance.Frame.Notification
+	local notificationFrame = instance.Notification
 
 	Theme.init(plugin)
 
 	local self: Ui; self = {
 		_currentTabIndex = 0,
-		_notificationClosed = notificationFrame.Main.Frame.Close.MouseButton1Down:Connect(function()
+		_notificationClosed = notificationFrame.Main.Frame.Frame.Close.MouseButton1Down:Connect(function()
 			notificationFrame.Visible = false
 		end),
 		_studioThemeChanged = settings().Studio.ThemeChanged:Connect(function()
