@@ -13,11 +13,11 @@ local DEFAULT_THEME_PARAMETERS: RawTheme = {
 
 	BorderColor = { Enum.StudioStyleGuideColor.Border.Name },
 
+	BackgroundColor = { Enum.StudioStyleGuideColor.Light.Name },
+	BackgroundImage = "",
+
     ForegroundColor = { Enum.StudioStyleGuideColor.MainBackground.Name },
 	ForegroundImage = "",
-
-    BackgroundColor = { Enum.StudioStyleGuideColor.Light.Name },
-	BackgroundImage = "",
 
     UnselectedColor = { Enum.StudioStyleGuideColor.Button.Name },
     SelectedColor = { Enum.StudioStyleGuideColor.Button.Name, Enum.StudioStyleGuideModifier.Pressed.Name },
@@ -58,11 +58,11 @@ export type Theme = {
 
 	BorderColor: Color3,
 
-	ForegroundColor: Color3,
-	ForegroundImage: string,
-
 	BackgroundColor: Color3,
 	BackgroundImage: string,
+
+	ForegroundColor: Color3,
+	ForegroundImage: string,
 
 	UnselectedColor: Color3,
 	SelectedColor: Color3,
