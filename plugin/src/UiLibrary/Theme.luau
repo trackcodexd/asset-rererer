@@ -5,8 +5,8 @@ local DEFAULT_THEME_PARAMETERS: RawTheme = {
 	Name = "",
 
     Font = "SourceSansPro",
-    TextColor = { Enum.StudioStyleGuideColor.MainText.Name },
 	TextSize = 15,
+    TextColor = { Enum.StudioStyleGuideColor.MainText.Name },
     DimmedTextColor = { Enum.StudioStyleGuideColor.DimmedText.Name },
 	StrokeColor = Color3.new(),
     StrokeTransparency = 0.75,  -- varies based on theme: 1 for light, 0.75 for dark if not set
@@ -50,8 +50,8 @@ export type Theme = {
 	Id: string,
 
 	Font: Font,
-	TextColor: Color3,
 	TextSize: number,
+	TextColor: Color3,
 	DimmedTextColor: Color3,
 	StrokeColor: Color3,
 	StrokeTransparency: number,
