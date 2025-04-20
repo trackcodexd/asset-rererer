@@ -93,7 +93,8 @@ local function UpdateTheme(self: Ui)
 	notificationMainFrame.Transparency = theme.NotificationTransparency
 
 	local tipbar = uiFrame.Tip
-	Theme.updateFrame(tipbar)
+	tipbar.BackgroundColor3 = theme.BorderColor
+	tipbar.Frame.BackgroundColor3 = theme.ForegroundColor
 	Theme.updateText(tipbar.Frame.TipText)
 
 	for _, tab in self._tabs do
