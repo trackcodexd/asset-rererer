@@ -14,8 +14,7 @@ Reporting bugs and telling me how to make the reuploader better is also a big ro
 
 If you are thinking about contributing to the code, CONGRATULATIONS! You are probably a better coder than 99% of the people in the discord...
 
-But really, code contributions are welcome and I'm always looking to improve my code and it's a great way for you to contribute to your community. So don't be afraid. Code contributors also get permanent access to the early access for the reuploader. Unless it is miniscule like fixing grammar, But it is up to my discretion.
-
+But really, code contributions are welcome and I'm always looking to improve my code and it's a great way for you to contribute to your community. So don't be afraid.
 ALL forks are welcome!!
 
 ## Requirements
