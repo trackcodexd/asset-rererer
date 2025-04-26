@@ -12,7 +12,7 @@ type retryOptions struct {
 func NewOptions(options ...func(*retryOptions)) *retryOptions {
 	o := &retryOptions{
 		Tries:    -1,
-		Delay:    1 * time.Second,
+		Delay:    time.Second,
 		MaxDelay: 0,
 		BackOff:  1,
 	}
