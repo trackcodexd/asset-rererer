@@ -2,10 +2,16 @@ package files
 
 import (
 	"os"
+	"path/filepath"
 )
 
 func Write(n, c string) error {
-	f, err := os.OpenFile(n, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
+	wd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	f, err := os.OpenFile(filepath.Join(wd, n), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
 	if err != nil {
 		return err
 	}
@@ -16,6 +22,11 @@ func Write(n, c string) error {
 }
 
 func Read(n string) (string, error) {
-	data, err := os.ReadFile(n)
+	wd, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+
+	data, err := os.ReadFile(filepath.Join(wd, n))
 	return string(data), err
 }
