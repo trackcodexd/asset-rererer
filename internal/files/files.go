@@ -1,22 +1,21 @@
 package files
 
-import "os"
+import (
+	"os"
+)
 
-func Write(f, s string) error {
-	file, err := os.OpenFile(f, os.O_CREATE|os.O_WRONLY, 0o660)
+func Write(n, c string) error {
+	f, err := os.OpenFile(n, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
 	if err != nil {
 		return err
 	}
+	defer f.Close()
 
-	file.WriteString(s)
-	file.Close()
-	return nil
+	_, err = f.WriteString(c)
+	return err
 }
 
-func Read(f string) (string, error) {
-	data, err := os.ReadFile(f)
-	if err != nil {
-		return "", err
-	}
-	return string(data), nil
+func Read(n string) (string, error) {
+	data, err := os.ReadFile(n)
+	return string(data), err
 }
