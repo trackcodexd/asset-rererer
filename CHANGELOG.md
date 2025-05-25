@@ -2,6 +2,16 @@
 
 - Fixed saving cookie for mac users. ([#27](https://github.com/kartFr/Asset-Reuploader/pull/27))
 
+### Accessibility changes ([#46](https://github.com/kartFr/Asset-Reuploader/pull/46))
+
+- Added port to startup message.
+- Added message to tell user you can rerun without restarting when finished reuploading.
+- Added a + button to text input to make it more accessible.
+- Changed default port from `61048` to `38073`
+- Changed valid port range from `2049-65535` to `1024-49151`
+- Fixed stats displaying on failure to start reuploading.
+- Fixed notification header being tiny.
+
 # [1.3.1](https://github.com/kartFr/Asset-Reuploader/releases/tag/1.3.1) - April 27th, 2025
 
 - Changed client timeout from `15s` to `30s` ([#24](https://github.com/kartFr/Asset-Reuploader/pull/24))
