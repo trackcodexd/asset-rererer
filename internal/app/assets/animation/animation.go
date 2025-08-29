@@ -78,7 +78,7 @@ func Reupload(ctx *context.Context, r *request.Request) {
 	creatorPlaceMap := shardedmap.New[*atomicarray.AtomicArray[int64]]()
 	creatorMutexMap := shardedmap.New[*sync.RWMutex]()
 
-	uploadQueue := taskqueue.New[int64](time.Minute, 120)
+	uploadQueue := taskqueue.New[int64](time.Minute, 3000)
 
 	logger.Println("Reuploading animations...")
 
