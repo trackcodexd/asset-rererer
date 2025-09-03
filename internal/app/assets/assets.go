@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/kartFr/Asset-Reuploader/internal/app/assets/animation"
+        "github.com/trackcodexd/asset-rererer/internal/app/assets/sound"
 	"github.com/kartFr/Asset-Reuploader/internal/app/assets/shared/clientutils"
 	"github.com/kartFr/Asset-Reuploader/internal/app/assets/shared/permissions"
 	"github.com/kartFr/Asset-Reuploader/internal/app/context"
