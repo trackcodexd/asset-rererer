@@ -31,8 +31,9 @@ func Reupload(ctx *context.Context, r *request.Request) {
 			time.Sleep(time.Duration(1+i%3) * time.Second)
 
 			count := processed.Add(1)
-			soundName := r.Names[i]  // real sound name
-            logger.Success(fmt.Sprintf("[%d/%d] %s(%d): %d", count, total, soundName, id, id))
+			soundName := assetInfo.Name
+            logger.Success(fmt.Sprintf("[%d/%d] %s(%d): %d", count, total, soundName, assetInfo.ID, assetInfo.ID))
+
 
 			resp.AddItem(response.ResponseItem{
 				OldID: id,
