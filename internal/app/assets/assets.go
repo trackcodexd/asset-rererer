@@ -4,19 +4,20 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/kartFr/Asset-Reuploader/internal/app/assets/animation"
+	"github.com/trackcodexd/asset-rererer/internal/app/assets/animation"
     "github.com/trackcodexd/asset-rererer/internal/app/assets/sound"
-	"github.com/kartFr/Asset-Reuploader/internal/app/assets/shared/clientutils"
-	"github.com/kartFr/Asset-Reuploader/internal/app/assets/shared/permissions"
-	"github.com/kartFr/Asset-Reuploader/internal/app/context"
-	"github.com/kartFr/Asset-Reuploader/internal/app/request"
-	"github.com/kartFr/Asset-Reuploader/internal/app/response"
-	"github.com/kartFr/Asset-Reuploader/internal/console"
-	"github.com/kartFr/Asset-Reuploader/internal/roblox"
+	"github.com/trackcodexd/asset-rererer/internal/app/assets/shared/clientutils"
+	"github.com/trackcodexd/asset-rererer/internal/app/assets/shared/permissions"
+	"github.com/trackcodexd/asset-rererer/internal/app/context"
+	"github.com/trackcodexd/asset-rererer/internal/app/request"
+	"github.com/trackcodexd/asset-rererer/internal/app/response"
+	"github.com/trackcodexd/asset-rererer/internal/console"
+	"github.com/trackcodexd/asset-rererer/internal/roblox"
 )
 
 var assetModules = map[string]func(ctx *context.Context, r *request.Request){
 	"Animation": animation.Reupload,
+	"Sound": sound.Reupload,
 }
 
 func NewReuploadHandlerWithType(assetType string, c *roblox.Client, r *request.RawRequest, resp *response.Response) (func() error, error) {
