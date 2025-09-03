@@ -6,11 +6,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kartFr/Asset-Reuploader/internal/app/config"
-	"github.com/kartFr/Asset-Reuploader/internal/color"
-	"github.com/kartFr/Asset-Reuploader/internal/console"
-	"github.com/kartFr/Asset-Reuploader/internal/files"
-	"github.com/kartFr/Asset-Reuploader/internal/roblox"
+	"github.com/trackcodexd/asset-rererer/internal/app/config"
+	"github.com/trackcodexd/asset-rererer/internal/color"
+	"github.com/trackcodexd/asset-rererer/internal/console"
+	"github.com/trackcodexd/asset-rererer/internal/files"
+	"github.com/trackcodexd/asset-rererer/internal/roblox"
 )
 
 var (
@@ -46,9 +46,11 @@ func main() {
 	}
 
 	fmt.Println("localhost started on port " + port + ". Waiting to start reuploading.")
-	if err := serve(c); err != nil {
-		log.Fatal(err)
-	}
+        if err := serve(c); err != nil {
+                log.Fatal(err)
+        }
+
+
 }
 
 func getCookie(c *roblox.Client) {
